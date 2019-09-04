@@ -8,6 +8,8 @@ from homeassistant.core import callback
 
 from .const import KEY_REAL_IP
 
+from socket import gethostbyname
+
 
 @callback
 def setup_real_ip(app, use_x_forwarded_for, trusted_proxies):
@@ -24,9 +26,8 @@ def setup_real_ip(app, use_x_forwarded_for, trusted_proxies):
             if (
                 use_x_forwarded_for
                 and X_FORWARDED_FOR in request.headers
-                and any(
-                    connected_ip in trusted_proxy for trusted_proxy in trusted_proxies
-                )
+                and connected_ip
+                in list(map((lambda s: ip_address(gethostbyname(s))), trusted_proxies))
             ):
                 request[KEY_REAL_IP] = ip_address(
                     request.headers.get(X_FORWARDED_FOR).split(", ")[-1]

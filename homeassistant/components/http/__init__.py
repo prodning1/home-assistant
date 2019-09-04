@@ -1,5 +1,4 @@
 """Support to serve the Home Assistant API as WSGI application."""
-from ipaddress import ip_network
 import logging
 import os
 import ssl
@@ -98,10 +97,10 @@ HTTP_SCHEMA = vol.Schema(
         ),
         vol.Inclusive(CONF_USE_X_FORWARDED_FOR, "proxy"): cv.boolean,
         vol.Inclusive(CONF_TRUSTED_PROXIES, "proxy"): vol.All(
-            cv.ensure_list, [ip_network]
+            cv.ensure_list, [cv.string]
         ),
         vol.Optional(CONF_TRUSTED_NETWORKS, default=[]): vol.All(
-            cv.ensure_list, [ip_network], trusted_networks_deprecated
+            cv.ensure_list, [cv.string], trusted_networks_deprecated
         ),
         vol.Optional(
             CONF_LOGIN_ATTEMPTS_THRESHOLD, default=NO_LOGIN_ATTEMPT_THRESHOLD
